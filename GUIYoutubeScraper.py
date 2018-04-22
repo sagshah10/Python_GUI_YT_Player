@@ -204,6 +204,57 @@ urltxt.grid(row=4, column=0)
 urlInput = Entry(YTFrame, width="50")
 urlInput.grid(row=4, column=1)
 
+#CREATING A context menu below to allow a user to cut, copy paste and select all, when they right-click the urlInput entry box.
+#Learnt How to create right click context menu from:
+    # http://effbot.org/zone/tkinter-popup-menu.htm     AND
+    # https://stackoverflow.com/questions/12014210/tkinter-app-adding-a-right-click-context-menu
+    # https://mail.python.org/pipermail/tutor/2004-July/030398.html  
+
+def copy():
+    try:
+        root.clipboard_clear()
+        text = urlInput.selection_get()
+        root.clipboard_append(text)
+    except Exception: pass
+    
+def cut():
+    try:
+        copy()
+        urlInput.delete("sel.first", "sel.last")
+    except Exception: pass
+    
+def paste():
+    try:
+        urlInput.delete("sel.first", "sel.last")
+    except Exception: pass
+
+    text = root.selection_get(selection='CLIPBOARD')
+    urlInput.insert('insert', text)
+
+def select_all():
+    #Learnt from: https://stackoverflow.com/questions/41477428/ctrl-a-select-all-in-entry-widget-tkinter-python?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+    urlInput.select_range(0, "end")
+    urlInput.icursor('end')
+
+popup = Menu(root, tearoff=0)
+popup.add_command(label="Copy", command=copy)
+popup.add_command(label="Cut", command=cut)
+popup.add_command(label="Paste", command=paste)
+popup.add_command(label="Select All", command=select_all)
+
+def do_popup(event):
+    # display the popup menu
+    try:
+        popup.tk_popup(event.x_root, event.y_root, 0)
+    finally:
+        # make sure to release the grab (Tk 8.0a1 only)
+        popup.grab_release()
+        
+urlInput.bind("<Button-3>", do_popup)
+
+## Right-Click context menu end
+
+
 addBlankSpace(YTFrame, 5)
 submit = Button(YTFrame, text="Get Video Links", command=getQuality)
 submit.grid(row=6, column=0)
