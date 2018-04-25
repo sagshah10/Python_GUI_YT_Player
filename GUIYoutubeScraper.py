@@ -151,7 +151,7 @@ def getQuality():
         return
 
     else:
-        global selectedQual
+        global selectedQual, qualFrame
 
         selectedQual = StringVar()
         qlty = [] 
